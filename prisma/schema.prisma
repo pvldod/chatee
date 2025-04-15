@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String         @id @default(cuid())
+  name               String
+  email              String         @unique
+  password           String
+  role               String         @default("user")
+  subscriptionTier   String?
+  subscriptionStatus String?
+  trialEndsAt        DateTime?
+  settings           Json?
+  notificationSettings Json?        @default("{\"emailNotifications\":{\"newMessages\":true,\"dailyDigest\":false,\"weeklyDigest\":true,\"systemNotifications\":true},\"webNotifications\":{\"realTime\":true,\"errors\":true,\"updates\":false}}")
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  chatbots           Chatbot[]
+  subscriptions      Subscription[]
+  apiKeys            ApiKey[]
+}
+
+model Subscription {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tier               String
+  status             String
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean  @default(false)
+  paymentMethod      String?
+  stripeCustomerId   String?
+  stripeSubscriptionId String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Chatbot {
+  id              String          @id @default(cuid())
+  userId          String
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String
+  description     String?
+  welcomeMessage  String          @default("Hi there! How can I help you today?")
+  appearance      Json
+  settings        Json
+  integrations    Json?
+  status          String          @default("inactive")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  knowledgeBases  KnowledgeBase[]
+  conversations   Conversation[]
+}
+
+model KnowledgeBase {
+  id          String   @id @default(cuid())
+  chatbotId   String
+  chatbot     Chatbot  @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  type        String
+  status      String
+  metadata    Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  documents   Document[]
+}
+
+model Document {
+  id              String        @id @default(cuid())
+  knowledgeBaseId String
+  knowledgeBase   KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Cascade)
+  title           String
+  content         String
+  url             String?
+  metadata        Json?
+  vectorId        String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Conversation {
+  id             String    @id @default(cuid())
+  chatbotId      String
+  chatbot        Chatbot   @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+  sessionId      String
+  userIdentifier String?
+  metadata       Json?
+  rating         Int?
+  feedback       String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  messages       Message[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String
+  content        String
+  timestamp      DateTime     @default(now())
+}
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  key         String   @unique
+  lastUsed    DateTime?
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime?
+  revoked     Boolean  @default(false)
+}
+
+model Usage {
+  id          String   @id @default(cuid())
+  userId      String
+  chatbotId   String
+  messageCount Int
+  tokenCount  Int
+  period      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
