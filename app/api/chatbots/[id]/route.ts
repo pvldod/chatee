@@ -6,12 +6,12 @@ import { getAuthCookie } from "@/lib/cookies"
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const user = await getAuthUser()
-
+    
     if (!user) {
-      return NextResponse.json({ success: false, message: "Not authenticated" }, { status: 401 })
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 })
     }
 
-    const chatbotId = params?.id
+    const chatbotId = await Promise.resolve(params.id)
 
     if (!chatbotId) {
       return NextResponse.json({ success: false, message: "Invalid chatbot ID" }, { status: 400 })
@@ -24,9 +24,6 @@ export async function GET(request: Request, { params }: { params: { id: string }
       },
       include: {
         knowledgeBases: true,
-        _count: {
-          select: { conversations: true },
-        },
       },
     })
 
@@ -34,10 +31,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ success: false, message: "Chatbot not found" }, { status: 404 })
     }
 
-    return NextResponse.json({
-      success: true,
-      chatbot,
-    })
+    return NextResponse.json({ success: true, chatbot })
   } catch (error) {
     console.error("Error fetching chatbot:", error)
     return NextResponse.json({ success: false, message: "Failed to fetch chatbot" }, { status: 500 })

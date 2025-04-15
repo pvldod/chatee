@@ -1,60 +1,63 @@
-# Telegram Bot with Neon Database
+# Chatee.io
 
-This project implements a Telegram bot that uses Neon PostgreSQL database for storing conversations and user data.
-
-## Setup
-
-1. Install dependencies:
-   \`\`\`
-   npm install
-   \`\`\`
-
-2. Set up environment variables:
-   Create a `.env.local` file with the following variables:
-   \`\`\`
-   TELEGRAM_BOT_TOKEN=your_telegram_bot_token
-   NEXT_PUBLIC_APP_URL=your_app_url
-   DATABASE_URL=your_neon_database_url
-   OPENAI_API_KEY=your_openai_api_key
-   \`\`\`
-
-3. Set up the webhook (for production):
-   \`\`\`
-   npm run telegram:webhook
-   \`\`\`
-
-4. Or start the bot in polling mode (for development):
-   \`\`\`
-   npm run telegram:start
-   \`\`\`
+AI-powered chat agent platform that allows you to create support bots that talk like humans.
 
 ## Features
 
-- User registration via Telegram
-- Conversation history stored in Neon database
-- AI-powered responses using OpenAI
-- Usage tracking
+- Create AI chatbots trained on your documentation
+- Customize appearance and behavior
+- Multiple knowledge base sources (documents, websites, Q&A)
+- Real-time chat interface
+- Dashboard for managing chatbots
+- Usage analytics and monitoring
+- Secure and scalable
 
-## Commands
+## Tech Stack
 
-- `/start` - Start or restart the bot
-- `/help` - Show help message
-- `/status` - Check account status
+- Next.js 14
+- TypeScript
+- Tailwind CSS
+- Prisma
+- PostgreSQL
+- OpenAI
+- Stripe
+- Telegram Bot API
 
 ## Development
 
-- Run the Next.js development server:
-  \`\`\`
-  npm run dev
-  \`\`\`
-
-- Run the bot in polling mode:
-  \`\`\`
-  npm run telegram:start
-  \`\`\`
+1. Clone the repository
+2. Copy `.env.example` to `.env` and fill in your environment variables
+3. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+4. Run database migrations:
+   ```bash
+   pnpm prisma migrate dev
+   ```
+5. Start the development server:
+   ```bash
+   pnpm dev
+   ```
 
 ## Deployment
 
-1. Deploy to Vercel or your preferred hosting platform
-2. Set up the webhook using `npm run telegram:webhook`
-3. Make sure your environment variables are configured in your hosting platform
+### Vercel
+
+1. Push your code to GitHub
+2. Import your repository in Vercel
+3. Add environment variables from `.env.example`
+4. Deploy
+
+### Database
+
+1. Create a PostgreSQL database (e.g. on Supabase)
+2. Update `DATABASE_URL` in environment variables
+3. Run migrations:
+   ```bash
+   pnpm prisma migrate deploy
+   ```
+
+## License
+
+MIT

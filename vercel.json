@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "regions": ["fra1"],
+  "env": {
+    "NEXT_PUBLIC_APP_URL": "${VERCEL_URL}",
+    "DATABASE_URL": "${env.DATABASE_URL}",
+    "JWT_SECRET": "${env.JWT_SECRET}",
+    "OPENAI_API_KEY": "${env.OPENAI_API_KEY}",
+    "STRIPE_SECRET_KEY": "${env.STRIPE_SECRET_KEY}",
+    "STRIPE_WEBHOOK_SECRET": "${env.STRIPE_WEBHOOK_SECRET}",
+    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "${env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}",
+    "TELEGRAM_BOT_TOKEN": "${env.TELEGRAM_BOT_TOKEN}",
+    "TELEGRAM_WEBHOOK_URL": "${env.TELEGRAM_WEBHOOK_URL}"
+  }
+} 
